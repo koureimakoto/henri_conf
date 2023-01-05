@@ -1,0 +1,38 @@
+theme = "helix_dark_theme"
+
+
+[editor]
+line-number = "absolute"
+auto-completion = true
+completion-trigger-len = 3
+rulers = [80]
+
+[editor.statusline]
+left = ["mode", "spinner"]
+center = ["file-name"]
+separator = "|-|"
+mode.normal = "NORMAL MODE"
+mode.insert = "INSERT MODE"
+mode.select = "SELECT MODE"
+
+[editor.lsp]
+display-messages = true
+
+[editor.file-picker]
+hidden = false
+
+[editor.whitespace.render]
+space = "all"
+tab   = "none"
+
+[editor.whitespace.characters]
+space = "⚋"
+
+[editor.indent-guides]
+render = true
+character = "┆"
+skip-levels = 1
+
+[keys.normal]
+"backspace" = { r = ":sh cargo run"}
+""

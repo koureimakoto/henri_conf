@@ -1,0 +1,6 @@
+# Author : Talles Fagundes <koureimakoto@gmail.com>
+
+inherits = "monokai"
+
+"diagnostic.error" = { fg = "errorfg", bg = "errorbg", underline = { color = "red" } }
+
