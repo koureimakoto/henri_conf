@@ -1,0 +1,8 @@
+# RUST + HTML format support
+
+[[language]]
+name = "rust"
+
+[language.auto-pairs]
+'<' = '>'
+'|' = '|'
