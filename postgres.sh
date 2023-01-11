@@ -26,7 +26,9 @@ then
 
   echo "Install PosgreSQL and PGAdmin"
   sudo apt update
-  sudo apt -y install postgresql php-pgsql pgadmin4-desktop
+  sudo apt -y install postgresql php-pgsql libpq-dev pgadmin4-desktop
 
   /etc/init.d/postgresql start
+
+  sudo -i -u postgres psql -c "ALTER USER postgres PASSWORD '1234';"
 fi
