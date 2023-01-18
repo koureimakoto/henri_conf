@@ -13,5 +13,5 @@ function check_os() {
 }
 
 function check_ubuntu {
-  return $( check_os "ubuntu" $1 )
+  $( check_os "ubuntu" $1 )
 }
