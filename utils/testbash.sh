@@ -17,6 +17,11 @@ function get_file_name() {
   basename $1
 }
 
+function list_functions() {
+  # Chat GPT assist
+  rg -o 'function\s+(\w+)' --replace '$1' --no-line-number $1
+}
+
 function list_files() {
   for file in $1/*
   do
@@ -24,6 +29,10 @@ function list_files() {
     if is_dir $component;
     then
       echo "Directory: $component"
+    elif is_file $component;
+    then
+      result=$(list_functions $component)
+      echo "functions: $result"
     fi 
   done
 }
@@ -36,8 +45,4 @@ function is_file() {
   [ -f $1 ]
 }
 
-# (?!(declare -f)) [a-zA-Z]+
-# res=$(declare -F)
-# echo $res | sed "s/declare -f //g"
-
-list_files $PWD
+list_files $1
