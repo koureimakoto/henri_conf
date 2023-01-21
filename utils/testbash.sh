@@ -19,7 +19,11 @@ function get_file_name() {
 
 function list_functions() {
   # Chat GPT assist
-  rg -o 'function\s+(\w+)' --replace '$1' --no-line-number $1
+  functions=$(rg -o 'function\s+(\w+)' --replace '$1' --no-line-number $1)
+  # $array_functions
+  # IFS=$'\n' read -r -a arr <<< "$functions"
+    echo $functions > mapfile -t arr
+  echo "$arr"
 }
 
 function list_files() {
@@ -31,11 +35,26 @@ function list_files() {
       echo "Directory: $component"
     elif is_file $component;
     then
-      result=$(list_functions $component)
-      echo "functions: $result"
+      if [[ "$component" == *.test.sh ]];
+      then
+        source $component
+        result=($(list_functions $component))
+        exec_concurrency_test $component $result
+      fi
     fi 
   done
 }
+
+function exec_concurrency_test() {
+  arr=$2
+  for cmd in ${!arr[@]};
+  do
+    echo "oi"
+    result=$($cmd)
+    echo "   $1::$cmd"
+  done
+}
+
 
 function is_dir() {
   [ -d $1 ]
