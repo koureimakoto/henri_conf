@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+source "asserts.sh"
 
 function stack() {
   echo "Func Stack ${FUNCNAME[1]}"
@@ -18,12 +19,17 @@ function get_file_name() {
 }
 
 function list_functions() {
+  if [ $# -eq 0 ];
+  then
+    echo "Missing argument"
+    exit 1
+  fi
   # Chat GPT assist
-  functions=$(rg -o 'function\s+(\w+)' --replace '$1' --no-line-number $1)
-  # $array_functions
-  # IFS=$'\n' read -r -a arr <<< "$functions"
-    echo $functions > mapfile -t arr
-  echo "$arr"
+  functions=$(rg -o 'function\s+(\w+)' --replace '$1' --no-line-number $1 | sed 's/ /\n/g') 
+  # mapfile -t arr | echo "$functions" & exit 0
+  arr=($functions)
+
+  echo "${arr[@]}"
 }
 
 function list_files() {
@@ -37,21 +43,30 @@ function list_files() {
     then
       if [[ "$component" == *.test.sh ]];
       then
-        source $component
-        result=($(list_functions $component))
-        exec_concurrency_test $component $result
+        new_bash_test_file
+          source $component
+          result=($(list_functions $component))
+          exec_concurrency_test $component $result
+          check_stack
+          echo ""
+        remove_bash_test_file
       fi
     fi 
   done
 }
 
 function exec_concurrency_test() {
-  arr=$2
-  for cmd in ${arr[@]};
-  do
-    result=$($cmd)
-    echo "   $1::$cmd"
-  done
+  arr=("$2")
+  if [ ${#arr[@]} -eq 0 ];
+  then
+    echo "Empty Array"
+  else
+    for cmd in ${arr[@]};
+    do
+      result=$("$cmd")
+      printf "$1::$cmd"
+    done
+  fi
 }
 
 
@@ -63,4 +78,6 @@ function is_file() {
   [ -f $1 ]
 }
 
-list_files $1
+# list_files $1
+
+list_functions check_os.test.sh
