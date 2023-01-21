@@ -47,9 +47,8 @@ function list_files() {
 
 function exec_concurrency_test() {
   arr=$2
-  for cmd in ${!arr[@]};
+  for cmd in ${arr[@]};
   do
-    echo "oi"
     result=$($cmd)
     echo "   $1::$cmd"
   done

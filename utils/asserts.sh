@@ -12,13 +12,14 @@ function assert_ne() {
   BASHTEST_GLOBAL_STACK+=($?)
 }
 
-function assert_raw() {
-  if [[ $1 == 0 ]] || [[ $1 == 1 ]];
+function assert() {
+  if [[ $1 -eq 0 ]] || [[ $1 -eq 1 ]];
   then
     BASHTEST_GLOBAL_STACK+=($1)
+  else
+    echo "Assert Raw Error: Only can pass a boolean value"
+    exit 1
   fi
-  echo "Assert Raw Error: Only can pass a boolean value"
-  exit 1
 }
 
 function clear_stack() {
@@ -50,4 +51,17 @@ function print_status() {
 }
 function stack_size() {
   echo ${#BASHTEST_GLOBAL_STACK[@]}
+}
+
+function check_stack() {
+  for id in "${!BASHTEST_GLOBAL_STACK[@]}";
+  do 
+    if [ $id -eq 0 ];
+    then
+      printf "OK"
+    else
+      printf "Error"
+      break
+    fi
+  done
 }
