@@ -2,6 +2,9 @@
 
 source "asserts.sh"
 
+declare -a FUNC_ARRAY=()
+declare -a TEST_ARRAY=()
+
 function stack() {
   echo "Func Stack ${FUNCNAME[1]}"
 }
@@ -25,11 +28,14 @@ function list_functions() {
     exit 1
   fi
   # Chat GPT assist
-  functions=$(rg -o 'function\s+(\w+)' --replace '$1' --no-line-number $1 | sed 's/ /\n/g') 
-  # mapfile -t arr | echo "$functions" & exit 0
-  arr=($functions)
-
-  echo "${arr[@]}"
+  replace=$1
+  functions=$(rg -o 'function\s+(\w+)' --replace '${1}' --no-line-number $replace ) 
+  # functions+='\n'
+  mapfile -t FUNC_ARRAY < <(printf "$functions")
+  # read -d '' -r -a arr <<< "$functions"
+  # arr=($functions)
+  
+  # echo "${arr[@]}"
 }
 
 function list_files() {
@@ -45,10 +51,9 @@ function list_files() {
       then
         new_bash_test_file
           source $component
-          result=($(list_functions $component))
-          exec_concurrency_test $component $result
-          check_stack
-          echo ""
+          # result=($(list_functions $component))
+          list_functions $component
+          exec_concurrency_test $component
         remove_bash_test_file
       fi
     fi 
@@ -56,15 +61,18 @@ function list_files() {
 }
 
 function exec_concurrency_test() {
-  arr=("$2")
-  if [ ${#arr[@]} -eq 0 ];
+  if [ ${#FUNC_ARRAY[@]} -eq 0 ];
   then
-    echo "Empty Array"
+    echo "$1 has no function to unit test"
   else
-    for cmd in ${arr[@]};
+    path=$1
+    path=${path%.*}
+    for cmd in "${FUNC_ARRAY[@]}";
     do
-      result=$("$cmd")
-      printf "$1::$cmd"
+      result=$($cmd)
+      printf "$path::$cmd -> "
+      check_stack
+      echo ""
     done
   fi
 }
@@ -78,6 +86,12 @@ function is_file() {
   [ -f $1 ]
 }
 
-# list_files $1
+list_files $1
 
-list_functions check_os.test.sh
+# ARR=($(list_functions check_os.test.sh))
+
+# echo ${ARR[@]}
+
+# for i in "${!ARR[@]}"; do
+#   echo "${ARR[$i]}"
+# done
