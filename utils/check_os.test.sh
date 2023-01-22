@@ -1,37 +1,23 @@
 #!/usr/bin/env bash
 
-clear
-
 filename="${0%.test}"
 echo "Init $filename test:"
 
 source "check_os.sh"
+source "asserts.sh"
 
 function if_comparation_is_true() {
-  if check_os "first" "first";
-  then
-    echo "The comparation is True"
-  else
-    echo "The comparation is False"
-  fi
-  stack
+  result=$(check_os "first" "first")
+  assert true $result
 } 
 
+function forced_error() {
+  result=$(check_os "first" "first")
+  assert false $result
+}
+
 function if_comparation_is_false() {
-  if check_os "first" "second";
-  then
-    echo "The comparation is True"
-  else
-    echo "The comparation is False"
-  fi
-  stack  
+  result=$(check_os "first" "second")
+  assert false $result
+  assert true $result
 }
-
-function if_is_ubuntu() {
-  
-}
-
-
-#EXEC TEST
-if_comparation_is_true
-if_comparation_is_false

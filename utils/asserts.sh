@@ -2,6 +2,8 @@
 
 # source "stack.sh"
 
+declare -a ASSERT_ARRAY=()
+
 function new_bash_test_file() {
   touch /tmp/bash_test_tmp_file.test
 }
@@ -15,14 +17,11 @@ function attach_result() {
 }
 
 function read_bash_test_file() {
-  vector=()
-  line=$(read < /tmp/bash_test_tmp_file.test)
-  for char in $line; 
+  ASSERT_ARRAY=()
+  while read line; 
   do
-    vector+=("$char")
-  done
-
-  echo "$vector" 
+    ASSERT_ARRAY+=("$line")
+  done < /tmp/bash_test_tmp_file.test 
 }
 
 function assert_eq() {
@@ -36,13 +35,25 @@ function assert_ne() {
 }
 
 function assert() {
-  if [[ $1 -eq 0 ]] || [[ $1 -eq 1 ]];
+  local response
+  if   [ $1 == true ];
   then
-    attach_result $1
+    response=0
+  elif [ $1 == false ];
+  then
+    response=1
   else
-    echo "Assert Raw Error: Only can pass a boolean value"
+    echo "The first argument must be set true or false"
     exit 1
   fi
+
+  case "$2" in
+    true |0|"true" |"0"|'t') attach_result $(($response^0));;
+    false|1|"false"|"1"|'f') attach_result $(($response^1));;
+    *) echo "Assert Raw Error: Only can pass a boolean value using: true|false : 0|1 : \"true\"|\"false\" : \"0\"|\"1\""
+      echo "$3"
+      exit 1;;
+  esac
 }
 
 function clear_stack() {
@@ -57,9 +68,9 @@ function pop() {
 }
 
 function print_stack() {
-  for id in "${!ASSERT_STACK[@]}";
+  for id in "${!ASSERT_ARRAY[@]}";
   do
-    status=$( print_status ${ASSERT_STACK[$id]} )
+    status=$( print_status ${ASSERT_ARRAY[$id]} )
     echo "STACK $id: $status"
   done
 }
@@ -77,22 +88,21 @@ function stack_size() {
 }
 
 function check_stack() {
-  ASSERT_STACK=$(read_bash_test_file)
-  if [ ${#ASSERT_STACK[@]} -eq 0 ];
+  read_bash_test_file
+  if [ ${#ASSERT_ARRAY[@]} -eq 0 ];
   then
     echo "Empty Stack"
     return 1
   fi
   
-  for id in "${!ASSERT_STACK[@]}";
+  local status=" OK "
+  for id in "${ASSERT_ARRAY[@]}";
   do 
-    if [ $id -eq 0 ];
+    if [[ $id != 0 ]];
     then
-      printf " OK "
-    else
-      printf " Error "
+      status=" Error "
       break
     fi
   done
-  return 0
+  echo $status
 }

@@ -51,7 +51,6 @@ function list_files() {
       then
         new_bash_test_file
           source $component
-          # result=($(list_functions $component))
           list_functions $component
           exec_concurrency_test $component
         remove_bash_test_file
@@ -72,11 +71,9 @@ function exec_concurrency_test() {
       result=$($cmd)
       printf "$path::$cmd -> "
       check_stack
-      echo ""
     done
   fi
 }
-
 
 function is_dir() {
   [ -d $1 ]
@@ -87,11 +84,3 @@ function is_file() {
 }
 
 list_files $1
-
-# ARR=($(list_functions check_os.test.sh))
-
-# echo ${ARR[@]}
-
-# for i in "${!ARR[@]}"; do
-#   echo "${ARR[$i]}"
-# done

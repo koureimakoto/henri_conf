@@ -9,7 +9,12 @@ function check_os() {
     exit 1
   fi
   
-  [ $1 == $2 ]
+  if [ $1 == $2 ];
+  then
+    echo "true"
+  else
+    echo "false"
+  fi
 }
 
 function check_ubuntu {
