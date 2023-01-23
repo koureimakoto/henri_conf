@@ -108,7 +108,9 @@ function check_stack() {
   echo $status
 }
 
-function compare() {
+# Chat CGT assit: Chat give me a example using compare e type_of, I just separated into functions
+# and modified each of the functions in the best way for my project.
+function generic_cmp() {
   if [[ "$(type_of $1)" == "$(type_of $2)" ]];
   then
     if $(type_int $1);
@@ -122,20 +124,18 @@ function compare() {
     elif $(type_float $1);
     then
       readonly FLT_EPSILON=0.00000001
-      # Chat GPT assist
 
       local RHS
       local LHS
 
       if [[ $1 > $2 ]];
       then
-        RHS=$1
-        LHS=$2
+        RHS=$1; LHS=$2
       else
-        RHS=$2
-        LHS=$1
+        RHS=$2; LHS=$1
       fi
 
+      # Chat GPT assist: original -> if [[ $(echo "$1-$2 < $tolerancia" | bc) -eq 1 ]];
       if [[ $(echo "$RHS - $LHS < $FLT_EPSILON" | bc) -eq 1 ]];
       then
         echo "true"
@@ -146,4 +146,4 @@ function compare() {
   fi
 }
 
-compare $1 $2
+generic_cmp $1 $2

@@ -17,6 +17,14 @@ function check_os() {
   fi
 }
 
-function check_ubuntu {
-  $( check_os "ubuntu" $1 )
+function check_ubuntu() {
+  echo $( check_os "ubuntu" $1 )
+}
+
+function check_arch() {
+  echo $( check_os "arch" $1 )
+}
+
+function check_fedora() {
+  echo $( check_os "fedora" $1 )
 }

@@ -23,7 +23,7 @@ then
     PARAMETER=""
     if [[ -n $2 ]];
     then
-        if [[ $2 == "packman" ]];
+        if [[ $2 == "pacman" ]];
         then
             PARAMETER="-S"
         elif [[ $2 == "apt" || $2 == "apt-get" ]];

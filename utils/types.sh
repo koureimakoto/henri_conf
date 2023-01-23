@@ -28,7 +28,7 @@ function type_bool() {
 function type_fd() {
   if $(type_int $1);
   then
-    # Chat GPT assist
+    # Chat GPT assist: original -> head -c 1 <&"$fd" &>/dev/null
     fd=$1
     if head -c 1 <&"$fd" &>/dev/null;
     then
@@ -41,6 +41,7 @@ function type_fd() {
   fi
 }
 
+# Chat GPT assist
 function type_of() {
   if [[ ! -n $1 ]];
   then
@@ -63,5 +64,3 @@ function type_of() {
     echo "text"
   fi
 }
-
-# type_fd $1

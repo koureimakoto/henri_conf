@@ -27,15 +27,10 @@ function list_functions() {
     echo "Missing argument"
     exit 1
   fi
-  # Chat GPT assist
+  # Chat GPT assist: original $(grep -o 'function\s+(\w+)' --replace '$1' $1 ) 
   replace=$1
   functions=$(rg -o 'function\s+(\w+)' --replace '${1}' --no-line-number $replace ) 
-  # functions+='\n'
   mapfile -t FUNC_ARRAY < <(printf "$functions")
-  # read -d '' -r -a arr <<< "$functions"
-  # arr=($functions)
-  
-  # echo "${arr[@]}"
 }
 
 function list_files() {
