@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # source "stack.sh"
+source "types.sh"
 
 declare -a ASSERT_ARRAY=()
 
@@ -106,3 +107,43 @@ function check_stack() {
   done
   echo $status
 }
+
+function compare() {
+  if [[ "$(type_of $1)" == "$(type_of $2)" ]];
+  then
+    if $(type_int $1);
+    then
+      if [[ $1 -eq $2 ]]
+      then
+        echo "true"
+      else
+        echo "false"
+      fi
+    elif $(type_float $1);
+    then
+      readonly FLT_EPSILON=0.00000001
+      # Chat GPT assist
+
+      local RHS
+      local LHS
+
+      if [[ $1 > $2 ]];
+      then
+        RHS=$1
+        LHS=$2
+      else
+        RHS=$2
+        LHS=$1
+      fi
+
+      if [[ $(echo "$RHS - $LHS < $FLT_EPSILON" | bc) -eq 1 ]];
+      then
+        echo "true"
+      else
+        echo "false"
+      fi
+    fi
+  fi
+}
+
+compare $1 $2
