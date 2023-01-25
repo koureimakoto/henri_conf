@@ -2,12 +2,14 @@
 
 clear
 
+source "utils/check_os.sh"
+
 if [ ! -n $1 ];
 then
   echo "Empty argument! Try out: ./php8.sh <ubuntu|pop|fedora>"
 fi
 
-if [ "ubuntu" == $1 ] || [ "pop" == $1 ];
+if $(check_ubuntu $1) || [ "pop" == $1 ];
 then
   SQLITE_PATH=/usr/src/sqlite
   PHP_PATH=/opt/php8

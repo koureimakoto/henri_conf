@@ -2,9 +2,7 @@
 
 clear
 
-# sudo apt update
-# sudo apt install build-essential binutils apt-transport-https wget 
-
+source "utils/check_os.sh"
 
 if [[ ! -n $1 ]];
 then
@@ -12,13 +10,21 @@ then
   exit 1
 fi
 
-if [ "ubuntu" == $1 ] || [ "pop" == $1 ];
+if $(check_ubuntu $1) || [ "pop" == $1 ];
 then
-  echo "PostgreSQL installation for $1"
 
+  # OS dependences
+  sudo apt update
+  sudo apt install build-essential binutils apt-transport-https wget 
+
+  PG_APT_LIST=/etc/apt/sources.list.d/pgdg.list
+  PG_REPOS="deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main"
+  PG_URL_KEY="https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+  
+  echo "PostgreSQL installation for $1"
   echo "Install the public key for PostgreSQL"
-  sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-  wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  sudo sh -c "echo $PG_REPOS > $PG_APT_LIST"
+  wget --quiet -O - $PG_URL_KEY | sudo apt-key add -
 
   echo "Install the public key for PGAdmin4"
   curl -fsS https://www.pgadmin.org/static/packages_pgadmin_org.pub | sudo gpg --dearmor -o /usr/share/keyrings/packages-pgadmin-org.gpg
