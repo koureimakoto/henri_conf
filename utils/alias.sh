@@ -8,7 +8,9 @@ function set_alias() {
   if [ -f $ZSHRC ];
   then
     echo "alias $1=$2" >> $ZSHRC
-  elif [ -f $BASHRC ];
+  fi
+  
+  if [ -f $BASHRC ];
   then
     echo "alias $1=$2" >> $BASH_ALIASES
   fi
