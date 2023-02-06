@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
-ZSHRC="~/.zshrc"
-BASHRC="~/.bashrc"
-BASH_ALIASES="~/.bash_aliases"
+ZSHRC=~/.zshrc
+BASHRC=~/.bashrc
+BASH_ALIASES=~/.bash_aliases
 
 function set_alias() {
-  if [ -f $ZSHRC ];
+  if [[ -f $ZSHRC ]];
   then
-    echo "alias $1=$2" >> $ZSHRC
+    printf "\nalias $1=\"$2\"" >> $ZSHRC
   fi
   
-  if [ -f $BASHRC ];
+  if [[ -f $BASHRC ]];
   then
-    echo "alias $1=$2" >> $BASH_ALIASES
+    printf "\nalias $1=\"$2\"" >> $BASH_ALIASES
   fi
 }
